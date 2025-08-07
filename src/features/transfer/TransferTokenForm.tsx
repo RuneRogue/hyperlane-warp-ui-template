@@ -260,7 +260,7 @@ function ChainSelectSection({ isReview, mode }: { isReview: boolean; mode: 'to-b
     updateQueryParam(WARP_QUERY_PARAMS.TOKEN, '');
   }, [mode, values.origin, values.destination, setFieldValue, setOriginChainName, warpCore]);
 
-  const setTokenOnChainChange = (origin: string, destination: string) => {
+  const setTokenOnChainChange = (_origin: string, _destination: string) => {
     // Reset token selection when chains change
     setFieldValue('tokenIndex', undefined); // Reset to no token selected
     updateQueryParam(WARP_QUERY_PARAMS.TOKEN, ''); // Clear token from URL
