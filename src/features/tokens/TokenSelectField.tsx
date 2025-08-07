@@ -27,8 +27,17 @@ export function TokenSelectField({ name, disabled, setIsNft }: Props) {
   const { origin, destination } = values;
   useEffect(() => {
     const tokensWithRoute = warpCore.getTokensForRoute(origin, destination);
-    setIsAutomaticSelection(tokensWithRoute.length <= 1);
-  }, [warpCore, origin, destination, helpers]);
+    
+    // Only set as automatic when there are NO routes
+    setIsAutomaticSelection(tokensWithRoute.length === 0);
+    
+    // If there's exactly one route and no token is currently selected, auto-select it
+    if (tokensWithRoute.length === 1 && field.value === undefined) {
+      const tokenIndex = getIndexForToken(warpCore, tokensWithRoute[0]);
+      helpers.setValue(tokenIndex);
+      updateQueryParam(WARP_QUERY_PARAMS.TOKEN, tokensWithRoute[0].addressOrDenom);
+    }
+  }, [warpCore, origin, destination, helpers, field.value]);
 
   const onSelectToken = (newToken: IToken) => {
     // Set the token address value in formik state
@@ -92,6 +101,8 @@ function TokenButton({
   onClick?: () => void;
   isAutomatic?: boolean;
 }) {
+  const displayText = token?.symbol || (isAutomatic ? 'No routes available' : 'Select Token');
+  
   return (
     <button
       type="button"
@@ -101,7 +112,7 @@ function TokenButton({
       <div className="flex items-center">
         {token && <TokenIcon token={token} size={20} />}
         <span className={`ml-2 ${!token?.symbol && 'text-slate-400'}`}>
-          {token?.symbol || (isAutomatic ? 'No routes available' : 'Select Token')}
+          {displayText}
         </span>
       </div>
       <ChevronIcon width={12} height={8} direction="s" />

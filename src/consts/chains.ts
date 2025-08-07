@@ -10,7 +10,8 @@ import {
   soon,
   soonAddresses,
 } from '@hyperlane-xyz/registry';
-import { ChainMap, ChainMetadata } from '@hyperlane-xyz/sdk';
+import { ChainMap, ChainMetadata, ExplorerFamily } from '@hyperlane-xyz/sdk';
+import { ProtocolType } from '@hyperlane-xyz/utils';
 
 // A map of chain names to ChainMetadata
 // Chains can be defined here, in chains.json, or in chains.yaml
@@ -37,6 +38,29 @@ export const chains: ChainMap<ChainMetadata & { mailbox?: Address }> = {
   solaxy: {
     ...solaxy,
     mailbox: solaxyAddresses.mailbox,
+  },
+  blockx: {
+    protocol: ProtocolType.Ethereum,
+    chainId: 19191,
+    domainId: 19191,
+    name: 'blockx',
+    displayName: 'BlockX',
+    nativeToken: { name: 'BlockX', symbol: 'BCX', decimals: 18 },
+    rpcUrls: [{ http: 'https://web3.blockxnet.com' }],
+    blockExplorers: [
+      {
+        name: 'BlockX Explorer',
+        url: 'https://explorer.blockxnet.com',
+        apiUrl: 'https://api.blockxnet.com',
+        family: ExplorerFamily.Blockscout,
+      },
+    ],
+    blocks: {
+      confirmations: 3,
+      reorgPeriod: 'finalized',
+      estimateBlockTime: 1,
+    },
+    logoURI: '/logos/logo.svg',
   },
   // mycustomchain: {
   //   protocol: ProtocolType.Ethereum,

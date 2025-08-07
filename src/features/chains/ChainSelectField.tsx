@@ -19,6 +19,7 @@ type Props = {
   disabled?: boolean;
   customListItemField: ChainSearchMenuProps['customListItemField'];
   token?: IToken;
+  chainFilter?: Set<string>;
 };
 
 export function ChainSelectField({
@@ -28,6 +29,7 @@ export function ChainSelectField({
   disabled,
   customListItemField,
   token,
+  chainFilter,
 }: Props) {
   const [field, , helpers] = useField<ChainName>(name);
   const { setFieldValue } = useFormikContext<TransferFormValues>();
@@ -95,6 +97,7 @@ export function ChainSelectField({
         close={() => setIsModalOpen(false)}
         onSelect={handleChange}
         customListItemField={customListItemField}
+        chainFilter={chainFilter}
       />
     </div>
   );

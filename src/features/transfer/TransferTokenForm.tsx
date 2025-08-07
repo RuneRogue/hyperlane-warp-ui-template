@@ -11,9 +11,7 @@ import {
 import {
   AccountInfo,
   ChevronIcon,
-  IconButton,
   SpinnerIcon,
-  SwapIcon,
   getAccountAddressAndPubKey,
   useAccountAddressForChain,
   useAccounts,
@@ -52,7 +50,6 @@ import {
   getIndexForToken,
   getInitialTokenIndex,
   getTokenByIndex,
-  getTokenIndexFromChains,
   useWarpCore,
 } from '../tokens/hooks';
 import { getTokensWithSameCollateralAddresses, isValidMultiCollateralToken } from '../tokens/utils';
@@ -64,7 +61,7 @@ import { useRecipientBalanceWatcher } from './useBalanceWatcher';
 import { useFeeQuotes } from './useFeeQuotes';
 import { useTokenTransfer } from './useTokenTransfer';
 
-export function TransferTokenForm() {
+export function TransferTokenForm({ mode = 'to-blockx' }: { mode?: 'to-blockx' | 'from-blockx' }) {
   const multiProvider = useMultiProvider();
   const warpCore = useWarpCore();
 
@@ -74,7 +71,7 @@ export function TransferTokenForm() {
     routerAddressesByChainMap: s.routerAddressesByChainMap,
   }));
 
-  const initialValues = useFormInitialValues();
+  const initialValues = useFormInitialValues(mode);
   const { accounts } = useAccounts(multiProvider, config.addressBlacklist);
 
   // Flag for if form is in input vs review mode
@@ -133,7 +130,7 @@ export function TransferTokenForm() {
       {({ isValidating }) => (
         <Form className="flex w-full flex-col items-stretch">
           <WarningBanners />
-          <ChainSelectSection isReview={isReview} />
+          <ChainSelectSection isReview={isReview} mode={mode} />
           <div className="mt-2.5 flex items-end justify-between space-x-4">
             <TokenSection setIsNft={setIsNft} isReview={isReview} />
             <AmountSection isNft={isNft} isReview={isReview} />
@@ -159,40 +156,7 @@ export function TransferTokenForm() {
   );
 }
 
-function SwapChainsButton({
-  disabled,
-  onSwapChain,
-}: {
-  disabled?: boolean;
-  onSwapChain: (origin: string, destination: string) => void;
-}) {
-  const { values, setFieldValue } = useFormikContext<TransferFormValues>();
-  const { origin, destination } = values;
-
-  const onClick = () => {
-    if (disabled) return;
-    setFieldValue('origin', destination);
-    setFieldValue('destination', origin);
-    // Reset other fields on chain change
-    setFieldValue('recipient', '');
-    onSwapChain(destination, origin);
-  };
-
-  return (
-    <IconButton
-      width={20}
-      height={20}
-      title="Swap chains"
-      className={!disabled ? 'hover:rotate-180' : undefined}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      <SwapIcon width={20} height={20} />
-    </IconButton>
-  );
-}
-
-function ChainSelectSection({ isReview }: { isReview: boolean }) {
+function ChainSelectSection({ isReview, mode }: { isReview: boolean; mode: 'to-blockx' | 'from-blockx' }) {
   const warpCore = useWarpCore();
 
   const { setOriginChainName } = useStore((s) => ({
@@ -210,17 +174,96 @@ function ChainSelectSection({ isReview }: { isReview: boolean }) {
   }, [values.destination, warpCore]);
 
   const { originToken, destinationToken } = useMemo(() => {
-    const originToken = getTokenByIndex(warpCore, values.tokenIndex);
-    if (!originToken) return { originToken: undefined, destinationToken: undefined };
-    const destinationToken = originToken.getConnectionForChain(values.destination)?.token;
+    const currentToken = getTokenByIndex(warpCore, values.tokenIndex);
+    if (!currentToken) return { originToken: undefined, destinationToken: undefined };
+    
+    // Get the actual token that exists on the origin chain
+    let originToken: Token | undefined;
+    if (currentToken.chainName === values.origin) {
+      // Current token is already on the origin chain
+      originToken = currentToken;
+    } else {
+      // Find a token on the origin chain that connects to the current token
+      const tokensOnOrigin = warpCore.getTokensForChain(values.origin);
+      originToken = tokensOnOrigin?.find(token => 
+        token.getConnectionForChain(values.destination) || 
+        token.addressOrDenom === currentToken.addressOrDenom
+      );
+    }
+    
+    // Get the actual token that exists on the destination chain
+    let destinationToken: IToken | undefined;
+    if (originToken) {
+      const connection = originToken.getConnectionForChain(values.destination);
+      destinationToken = connection?.token;
+    }
+    
     return { originToken, destinationToken };
-  }, [values.tokenIndex, values.destination, warpCore]);
+  }, [values.tokenIndex, values.origin, values.destination, warpCore]);
+
+  // Filter chains based on mode
+  const { filteredOriginChains, filteredDestinationChains, originDisabled, destinationDisabled } = useMemo(() => {
+    if (mode === 'to-blockx') {
+      // Bridge TO BlockX: Show all chains except BlockX for origin, BlockX fixed for destination
+      const availableOriginChains = Object.keys(warpCore.multiProvider.metadata).filter(chain => chain !== 'blockx');
+      return {
+        filteredOriginChains: new Set(availableOriginChains),
+        filteredDestinationChains: new Set(['blockx']),
+        originDisabled: false,
+        destinationDisabled: true,
+      };
+    } else {
+      // Bridge FROM BlockX: BlockX fixed for origin, show all chains except BlockX for destination
+      const availableDestinationChains = Object.keys(warpCore.multiProvider.metadata).filter(chain => chain !== 'blockx');
+      return {
+        filteredOriginChains: new Set(['blockx']),
+        filteredDestinationChains: new Set(availableDestinationChains),
+        originDisabled: true,
+        destinationDisabled: false,
+      };
+    }
+  }, [mode, warpCore]);
+
+  // Set default values based on mode
+  useEffect(() => {
+    const availableChains = Object.keys(warpCore.multiProvider.metadata).filter(chain => chain !== 'blockx');
+    const defaultNonBlockXChain = availableChains[0] || 'ethereum'; // fallback to ethereum if no other chains
+
+    if (mode === 'to-blockx') {
+      // Set destination to BlockX if not already set
+      if (values.destination !== 'blockx') {
+        setFieldValue('destination', 'blockx');
+        updateQueryParam(WARP_QUERY_PARAMS.DESTINATION, 'blockx');
+      }
+      // If origin is BlockX, change it to a non-BlockX chain
+      if (values.origin === 'blockx') {
+        setFieldValue('origin', defaultNonBlockXChain);
+        updateQueryParam(WARP_QUERY_PARAMS.ORIGIN, defaultNonBlockXChain);
+        setOriginChainName(defaultNonBlockXChain);
+      }
+    } else if (mode === 'from-blockx') {
+      // Set origin to BlockX if not already set
+      if (values.origin !== 'blockx') {
+        setFieldValue('origin', 'blockx');
+        updateQueryParam(WARP_QUERY_PARAMS.ORIGIN, 'blockx');
+        setOriginChainName('blockx');
+      }
+      // If destination is BlockX, change it to a non-BlockX chain
+      if (values.destination === 'blockx') {
+        setFieldValue('destination', defaultNonBlockXChain);
+        updateQueryParam(WARP_QUERY_PARAMS.DESTINATION, defaultNonBlockXChain);
+      }
+    }
+    
+    // Reset token selection when mode changes
+    setFieldValue('tokenIndex', undefined);
+    updateQueryParam(WARP_QUERY_PARAMS.TOKEN, '');
+  }, [mode, values.origin, values.destination, setFieldValue, setOriginChainName, warpCore]);
 
   const setTokenOnChainChange = (origin: string, destination: string) => {
-    const tokenIndex = getTokenIndexFromChains(warpCore, null, origin, destination);
-    const token = getTokenByIndex(warpCore, tokenIndex);
-    updateQueryParam(WARP_QUERY_PARAMS.TOKEN, token?.addressOrDenom);
-    setFieldValue('tokenIndex', tokenIndex);
+    // Reset token selection when chains change
+    setFieldValue('tokenIndex', undefined); // Reset to no token selected
+    updateQueryParam(WARP_QUERY_PARAMS.TOKEN, ''); // Clear token from URL
   };
 
   const handleChange = (chainName: string, fieldName: string) => {
@@ -233,33 +276,28 @@ function ChainSelectSection({ isReview }: { isReview: boolean }) {
     updateQueryParam(fieldName, chainName);
   };
 
-  const onSwapChain = (origin: string, destination: string) => {
-    updateQueryParam(WARP_QUERY_PARAMS.ORIGIN, origin);
-    updateQueryParam(WARP_QUERY_PARAMS.DESTINATION, destination);
-    setTokenOnChainChange(origin, destination);
-    setOriginChainName(origin);
-  };
-
   return (
     <div className="mt-2 flex items-center justify-between gap-4">
       <ChainSelectField
         name="origin"
         label="From"
-        disabled={isReview}
+        disabled={isReview || originDisabled}
         customListItemField={destinationRouteCounts}
         onChange={handleChange}
         token={originToken}
+        chainFilter={filteredOriginChains}
       />
       <div className="flex flex-1 flex-col items-center">
-        <SwapChainsButton disabled={isReview} onSwapChain={onSwapChain} />
+        {/* Hide swap button in tab mode as it doesn't make sense with fixed chains */}
       </div>
       <ChainSelectField
         name="destination"
         label="To"
-        disabled={isReview}
+        disabled={isReview || destinationDisabled}
         customListItemField={originRouteCounts}
         onChange={handleChange}
         token={destinationToken}
+        chainFilter={filteredDestinationChains}
       />
     </div>
   );
@@ -624,7 +662,7 @@ function WarningBanners() {
   );
 }
 
-function useFormInitialValues(): TransferFormValues {
+function useFormInitialValues(mode: 'to-blockx' | 'from-blockx'): TransferFormValues {
   const warpCore = useWarpCore();
   const params = getQueryParams();
 
@@ -652,18 +690,31 @@ function useFormInitialValues(): TransferFormValues {
   return useMemo(() => {
     const firstToken = defaultOriginToken || warpCore.tokens[0];
     const connectedToken = firstToken.connections?.[0];
-    const chainsValid = originQuery && destinationQuery;
+    
+    // Set default values based on mode
+    let defaultOrigin: string;
+    let defaultDestination: string;
+
+    if (mode === 'to-blockx') {
+      // Bridge TO BlockX: default origin is first available non-BlockX chain, destination is BlockX
+      const availableChains = Object.keys(warpCore.multiProvider.metadata).filter(chain => chain !== 'blockx');
+      defaultOrigin = originQuery && originQuery !== 'blockx' ? originQuery : availableChains[0] || firstToken.chainName;
+      defaultDestination = 'blockx';
+    } else {
+      // Bridge FROM BlockX: origin is BlockX, default destination is first available non-BlockX chain
+      const availableChains = Object.keys(warpCore.multiProvider.metadata).filter(chain => chain !== 'blockx');
+      defaultOrigin = 'blockx';
+      defaultDestination = destinationQuery && destinationQuery !== 'blockx' ? destinationQuery : availableChains[0] || connectedToken?.token?.chainName || '';
+    }
 
     return {
-      origin: chainsValid ? originQuery : firstToken.chainName,
-      destination: chainsValid
-        ? destinationQuery
-        : config.defaultDestinationChain || connectedToken?.token?.chainName || '',
+      origin: defaultOrigin,
+      destination: defaultDestination,
       tokenIndex: tokenIndex,
       amount: '',
       recipient: '',
     };
-  }, [warpCore, destinationQuery, originQuery, tokenIndex, defaultOriginToken]);
+  }, [warpCore, destinationQuery, originQuery, tokenIndex, defaultOriginToken, mode]);
 }
 
 const insufficientFundsErrMsg = /insufficient.[funds|lamports]/i;
