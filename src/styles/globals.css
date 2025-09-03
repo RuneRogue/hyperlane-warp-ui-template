@@ -210,3 +210,15 @@ Fixes for cosmos chain selection modal
 div[data-floating-ui-portal] > div {
   z-index: 10000;
 }
+
+/*
+Hide edit button in chain select modal
+====================================
+*/
+.hide-edit-button button[title="Edit items"],
+.hide-edit-button button[aria-label="Edit items"],
+.hide-edit-button [title="Edit items"],
+.hide-edit-button [aria-label="Edit items"] {
+  display: none !important;
+}
+

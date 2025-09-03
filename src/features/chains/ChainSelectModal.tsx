@@ -37,7 +37,7 @@ export function ChainSelectListModal({
   };
 
   return (
-    <Modal isOpen={isOpen} close={close} panelClassname="p-4 sm:p-5 max-w-lg min-h-[40vh]">
+    <Modal isOpen={isOpen} close={close} panelClassname="p-4 sm:p-5 max-w-lg min-h-[40vh] hide-edit-button">
       <ChainSearchMenu
         chainMetadata={filteredChainMetadata}
         onClickChain={onSelectChain}

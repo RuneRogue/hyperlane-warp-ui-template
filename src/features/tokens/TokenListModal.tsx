@@ -186,7 +186,7 @@ export function TokenList({
         </button>
       ))}
       <UnsupportedRouteTokenList
-        unsupportedRouteTokensBySymbolMap={unsupportedRouteTokensBySymbolMap}
+        unsupportedRouteTokensBySymbolMap={config.showDisabledTokens ? unsupportedRouteTokensBySymbolMap : {}}
         origin={origin}
         destination={destination}
         onSelectUnsupportedRoute={onSelectUnsupportedRoute}

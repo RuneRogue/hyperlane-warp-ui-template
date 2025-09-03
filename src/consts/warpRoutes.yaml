@@ -2,5 +2,81 @@
 # These configs will be merged with the warp routes in the configured registry
 # The input here is typically the output of the Hyperlane CLI warp deploy command
 ---
-tokens: []
+tokens:
+  # Polygon-BlockX Test Token
+  - addressOrDenom: "0xDb151a44c156E4aB98AaB6b19F732aaA9FeBE857"
+    chainName: polygon
+    collateralAddressOrDenom: "0x5a45e4cf479dedd99940c2e0486dc8038561a875"
+    connections:
+      - token: ethereum|blockx|0x08A6097Cf4b3D7f140B7ef7947CEd9D25f327612
+    decimals: 18
+    name: Test Token
+    standard: EvmHypCollateral
+    symbol: TT
+  - addressOrDenom: "0x08A6097Cf4b3D7f140B7ef7947CEd9D25f327612"
+    chainName: blockx
+    connections:
+      - token: ethereum|polygon|0xDb151a44c156E4aB98AaB6b19F732aaA9FeBE857
+    decimals: 18
+    name: Test Token
+    standard: EvmHypSynthetic
+    symbol: TT
+  # Polygon-BlockX Test Token 2
+  - addressOrDenom: "0x16Ef5bBF7454e6dc577bE9c299bd19FA5D101823"
+    chainName: polygon
+    collateralAddressOrDenom: "0xa8e284c55140481c4c2803d90f345a6bda00e705"
+    connections:
+      - token: ethereum|blockx|0x1Fc7eAED413845037E94C1Cc7b96833b68BE676a
+    decimals: 18
+    name: Test Token 2
+    standard: EvmHypCollateral
+    symbol: TT2
+  - addressOrDenom: "0x1Fc7eAED413845037E94C1Cc7b96833b68BE676a"
+    chainName: blockx
+    connections:
+      - token: ethereum|polygon|0x16Ef5bBF7454e6dc577bE9c299bd19FA5D101823
+    decimals: 18
+    name: Test Token 2
+    standard: EvmHypSynthetic
+    symbol: TT2
+  # Polygon-BlockX USDC
+  - addressOrDenom: "0x0b484bF892556d6FA04891A6BD72406B679e83Df"
+    chainName: polygon
+    collateralAddressOrDenom: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+    connections:
+      - token: ethereum|blockx|0xF927469a6141e2B03bb5879cd8fB163447216D2b
+    decimals: 6
+    logoURI: '/logos/USDC_logo.svg'
+    name: USD Coin
+    standard: EvmHypCollateral
+    symbol: USDC
+  - addressOrDenom: "0xF927469a6141e2B03bb5879cd8fB163447216D2b"
+    chainName: blockx
+    connections:
+      - token: ethereum|polygon|0x0b484bF892556d6FA04891A6BD72406B679e83Df
+    decimals: 6
+    logoURI: '/logos/USDC_logo.svg'
+    name: USD Coin
+    standard: EvmHypSynthetic
+    symbol: USDC
+  # Polygon-BlockX USDT
+  - addressOrDenom: "0x3276456E6F7bc39637E2E674cc8DC96172E4e709"
+    chainName: polygon
+    collateralAddressOrDenom: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
+    connections:
+      - token: ethereum|blockx|0xc16841A15d5F58a7ea9c3B781aC53A81963D1eE7
+    decimals: 6
+    logoURI: '/logos/USDT_logo.svg'
+    name: Tether
+    standard: EvmHypCollateral
+    symbol: USDT
+  - addressOrDenom: "0xc16841A15d5F58a7ea9c3B781aC53A81963D1eE7"
+    chainName: blockx
+    connections:
+      - token: ethereum|polygon|0x3276456E6F7bc39637E2E674cc8DC96172E4e709
+    decimals: 6
+    logoURI: '/logos/USDT_logo.svg'
+    name: Tether
+    standard: EvmHypSynthetic
+    symbol: USDT
 options: {}
