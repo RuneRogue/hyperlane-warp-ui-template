@@ -1,9 +1,6 @@
 import { IconButton, XCircleIcon } from '@hyperlane-xyz/widgets';
-import Image from 'next/image';
 import { useState } from 'react';
 import { config } from '../../consts/config';
-import { links } from '../../consts/links';
-import InfoCircle from '../../images/icons/info-circle.svg';
 import { Card } from '../layout/Card';
 
 export function TipCard() {
@@ -17,7 +14,7 @@ export function TipCard() {
           Warp Routes make it easy to permissionlessly take your tokens interchain. Fork this
           template to get started!
         </p>
-        <a
+        {/* <a
           href={links.github}
           target="_blank"
           rel="noopener noreferrer"
@@ -25,7 +22,7 @@ export function TipCard() {
         >
           <Image src={InfoCircle} width={12} alt="" />
           <span className="ml-1.5 hidden text-sm sm:inline">More</span>
-        </a>
+        </a> */}
       </div>
       <div className="absolute right-3 top-3">
         <IconButton onClick={() => setShow(false)} title="Hide tip" className="hover:rotate-90">
