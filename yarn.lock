@@ -4828,7 +4828,7 @@ __metadata:
     tailwindcss: "npm:^3.4.15"
     ts-node: "npm:^10.9.2"
     typescript: "npm:5.6.3"
-    viem: "npm:^2.21.41"
+    viem: "npm:^2.37.2"
     vite-tsconfig-paths: "npm:^5.1.4"
     vitest: "npm:^3.0.3"
     wagmi: "npm:^2.12.26"
