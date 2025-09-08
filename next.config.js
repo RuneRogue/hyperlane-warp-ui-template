@@ -89,6 +89,8 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_VERSION: version,
   },
+  
+  output: "standalone",
 
   experimental: {
     esmExternals: "loose",
