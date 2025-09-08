@@ -79,4 +79,24 @@ tokens:
     name: Tether
     standard: EvmHypSynthetic
     symbol: USDT
+  #Polygon-BlockX BCX
+  - addressOrDenom: "0x2B51fa7CAA44668fa5b4431420414f6693d52032"
+    chainName: polygon
+    collateralAddressOrDenom: "0x871531a59Ef89C5262bCF58a80AB29F9711EA5a7"
+    connections:
+      - token: ethereum|blockx|0x30fa74fB086E3536C8f39040cde75Cf2192F78bD
+    decimals: 18
+    logoURI: '/logos/logo.svg'
+    name: BlockX
+    standard: EvmHypCollateral
+    symbol: BCX
+  - addressOrDenom: "0x30fa74fB086E3536C8f39040cde75Cf2192F78bD"
+    chainName: blockx
+    connections:
+      - token: ethereum|polygon|0x2B51fa7CAA44668fa5b4431420414f6693d52032
+    decimals: 18
+    logoURI: '/logos/logo.svg'
+    name: BlockX
+    standard: EvmHypNative
+    symbol: BCX
 options: {}
