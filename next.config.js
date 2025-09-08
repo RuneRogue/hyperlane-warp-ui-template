@@ -90,6 +90,11 @@ const nextConfig = {
     NEXT_PUBLIC_VERSION: version,
   },
 
+  experimental: {
+    esmExternals: "loose",
+  },
+  transpilePackages: ["@wagmi/core", "@hyperlane-xyz/widgets"],
+
   reactStrictMode: true,
 };
 
