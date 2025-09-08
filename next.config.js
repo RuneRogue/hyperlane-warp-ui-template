@@ -90,6 +90,10 @@ const nextConfig = {
     NEXT_PUBLIC_VERSION: version,
   },
 
+  experimental: {
+    serverComponentsExternalPackages: ["@wagmi/core", "wagmi", "viem"],
+  },
+
   reactStrictMode: true,
 };
 
