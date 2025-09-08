@@ -4804,7 +4804,6 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.13.0"
     "@vercel/analytics": "npm:^1.4.0"
     "@vercel/functions": "npm:^1.5.0"
-    "@wagmi/core": "npm:^2.20.3"
     autoprefixer: "npm:^10.4.20"
     bignumber.js: "npm:^9.1.2"
     buffer: "npm:^6.0.3"
@@ -12887,26 +12886,6 @@ __metadata:
     typescript:
       optional: true
   checksum: 10/c2c3f31e4fc4eb699e9af6041e1842d2e3fb7cff596cba4302cb154c1c276c1306f4c1f3082030d0811fd435334e654704fb8f54b24c97fe6f0502d180b4942f
-  languageName: node
-  linkType: hard
-
-"@wagmi/core@npm:^2.20.3":
-  version: 2.20.3
-  resolution: "@wagmi/core@npm:2.20.3"
-  dependencies:
-    eventemitter3: "npm:5.0.1"
-    mipd: "npm:0.0.7"
-    zustand: "npm:5.0.0"
-  peerDependencies:
-    "@tanstack/query-core": ">=5.0.0"
-    typescript: ">=5.0.4"
-    viem: 2.x
-  peerDependenciesMeta:
-    "@tanstack/query-core":
-      optional: true
-    typescript:
-      optional: true
-  checksum: 10/2a372df722b666375d8d0b6ec32fbee9fa2e044aaf3f7c521b5e971b79ef7f6dbc5a179863058c07f9f360b666f86bb648ab2d6d5d6f134208a2bdb45d7e2fcd
   languageName: node
   linkType: hard
 

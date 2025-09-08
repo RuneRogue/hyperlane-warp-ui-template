@@ -91,7 +91,7 @@ const nextConfig = {
   },
 
   experimental: {
-    serverComponentsExternalPackages: ["@wagmi/core", "wagmi", "viem"],
+    serverExternalPackages: ["@wagmi/core", "wagmi", "viem"],
   },
 
   reactStrictMode: true,
