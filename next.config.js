@@ -90,8 +90,6 @@ const nextConfig = {
     NEXT_PUBLIC_VERSION: version,
   },
 
-  transpilePackages: ["@wagmi/core", "@hyperlane-xyz/widgets" , "viem", "starknet", "ethers", "@hyperlane-xyz/sdk", "@hyperlane-xyz/utils"],
-
   reactStrictMode: true,
 };
 
