@@ -89,13 +89,8 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_VERSION: version,
   },
-  
-  output: "standalone",
 
-  experimental: {
-    esmExternals: "loose",
-  },
-  transpilePackages: ["@wagmi/core", "@hyperlane-xyz/widgets"],
+  transpilePackages: ["@wagmi/core", "@hyperlane-xyz/widgets" , "viem", "starknet", "ethers", "@hyperlane-xyz/sdk", "@hyperlane-xyz/utils"],
 
   reactStrictMode: true,
 };
