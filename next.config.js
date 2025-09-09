@@ -106,4 +106,4 @@ const sentryOptions = {
   },
 };
 
-module.exports = withBundleAnalyzer(withSentryConfig(nextConfig, sentryOptions));
+module.exports = nextConfig;
