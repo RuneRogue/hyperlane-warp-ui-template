@@ -4838,7 +4838,6 @@ __metadata:
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-toastify: "npm:^10.0.6"
-    starknet: "npm:^7.6.4"
     starknetkit: "patch:starknetkit@npm%3A2.6.1#~/.yarn/patches/starknetkit-npm-2.6.1-61cd76646d.patch"
     tailwindcss: "npm:^3.4.15"
     ts-node: "npm:^10.9.2"
@@ -24856,24 +24855,6 @@ __metadata:
     pako: "npm:^2.0.4"
     ts-mixer: "npm:^6.0.3"
   checksum: 10/db47247df58023fa4c47a60758c8401de87194fa42511fcdef0a04ffc126875b1f7b3f738d113ccdfe68b1da54fc91682baf00f11e7048b9b18a22455d21931d
-  languageName: node
-  linkType: hard
-
-"starknet@npm:^7.6.4":
-  version: 7.6.4
-  resolution: "starknet@npm:7.6.4"
-  dependencies:
-    "@noble/curves": "npm:1.7.0"
-    "@noble/hashes": "npm:1.6.0"
-    "@scure/base": "npm:1.2.1"
-    "@scure/starknet": "npm:1.1.0"
-    "@starknet-io/starknet-types-07": "npm:@starknet-io/types-js@~0.7.10"
-    "@starknet-io/starknet-types-08": "npm:@starknet-io/types-js@~0.8.4"
-    abi-wan-kanabi: "npm:2.2.4"
-    lossless-json: "npm:^4.0.1"
-    pako: "npm:^2.0.4"
-    ts-mixer: "npm:^6.0.3"
-  checksum: 10/9d998f91433d4cfd416392490f8b6b1b6dcb95d74c520795dd639dcef03da0590e2fd7ce6d1dd5e99f39b02b27b541afe871858e70868d09f40fb4b79402b34f
   languageName: node
   linkType: hard
 
