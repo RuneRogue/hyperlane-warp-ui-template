@@ -1,0 +1,104 @@
+# AWS App Runner optimized .dockerignore
+
+# Dependencies - will be installed in container
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm/
+# Keep .yarn/patches and .yarn/releases but exclude cache
+.yarn/cache/
+.yarn/install-state.gz
+
+# Build outputs - will be created in container
+.next/
+dist/
+build/
+out/
+
+# Environment files - should be set in App Runner
+.env*
+!.env.example
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Runtime and logs
+*.log
+logs/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Testing and coverage
+.nyc_output/
+coverage/
+.coverage
+*.lcov
+junit.xml
+
+# Temporary folders
+tmp/
+temp/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# Documentation
+README.md
+CUSTOMIZE.md
+LICENSE.md
+CHANGELOG.md
+*.md
+
+# Deployment and config files
+apprunner.yaml
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile*
+.dockerignore
+kubernetes/
+helm/
+
+# Development tools
+.devcontainer/
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Security and secrets
+*.pem
+*.key
+*.crt
+
+# AWS and cloud files
+.aws/
+.terraform/
+
+# Misc
+*.tgz
+*.tar.gz

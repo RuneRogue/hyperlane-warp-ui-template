@@ -2,18 +2,12 @@
 
 const { version } = require('./package.json');
 const { withSentryConfig } = require('@sentry/nextjs');
-let withBundleAnalyzer = (config) => config;
-if (process.env.ANALYZE === 'true') {
-  try {
-    withBundleAnalyzer = require('@next/bundle-analyzer')({
-      enabled: true,
-    });
-  } catch (err) {
-    console.warn('⚠️ Bundle analyzer not installed in production, skipping');
-  }
-}
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 const isDev = process.env.NODE_ENV !== 'production';
+
 // Sometimes useful to disable this during development
 const ENABLE_CSP_HEADER = true;
 const FRAME_SRC_HOSTS = [
