@@ -90,8 +90,6 @@ const nextConfig = {
     NEXT_PUBLIC_VERSION: version,
   },
 
-  output: 'standalone',
-
   reactStrictMode: true,
 };
 
