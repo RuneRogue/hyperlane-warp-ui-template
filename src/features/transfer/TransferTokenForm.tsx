@@ -281,28 +281,33 @@ function ChainSelectSection({ isReview, mode }: { isReview: boolean; mode: 'to-b
   };
 
   return (
-    <div className="mt-2 flex items-center justify-between gap-4">
-      <ChainSelectField
-        name="origin"
-        label="From"
-        disabled={isReview || originDisabled}
-        customListItemField={destinationRouteCounts}
-        onChange={handleChange}
-        token={originToken}
-        chainFilter={filteredOriginChains}
-      />
-      <div className="flex flex-1 flex-col items-center">
-        {/* Hide swap button in tab mode as it doesn't make sense with fixed chains */}
+    <div className="flex-1">
+      <label htmlFor="network" className="block pl-0.5 text-sm text-gray-600">
+        Network
+      </label>
+      <div className="mt-2 flex items-center justify-between gap-4">
+        <ChainSelectField
+          name="origin"
+          label="From"
+          disabled={isReview || originDisabled}
+          customListItemField={destinationRouteCounts}
+          onChange={handleChange}
+          token={originToken}
+          chainFilter={filteredOriginChains}
+        />
+        <div className="flex flex-1 flex-col items-center">
+          {/* Hide swap button in tab mode as it doesn't make sense with fixed chains */}
+        </div>
+        <ChainSelectField
+          name="destination"
+          label="To"
+          disabled={isReview || destinationDisabled}
+          customListItemField={originRouteCounts}
+          onChange={handleChange}
+          token={destinationToken}
+          chainFilter={filteredDestinationChains}
+        />
       </div>
-      <ChainSelectField
-        name="destination"
-        label="To"
-        disabled={isReview || destinationDisabled}
-        customListItemField={originRouteCounts}
-        onChange={handleChange}
-        token={destinationToken}
-        chainFilter={filteredDestinationChains}
-      />
     </div>
   );
 }
