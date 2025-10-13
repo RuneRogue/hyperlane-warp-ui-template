@@ -1,6 +1,7 @@
 import { MultiProtocolWalletModal } from '@hyperlane-xyz/widgets';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Head from 'next/head';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { APP_NAME, BACKGROUND_COLOR, BACKGROUND_IMAGE } from '../../consts/app';
 import { config } from '../../consts/config';
 import { useStore } from '../../features/store';
@@ -17,6 +18,19 @@ export function AppLayout({ children }: PropsWithChildren) {
       setIsSideBarOpen: s.setIsSideBarOpen,
     }),
   );
+
+  // Get RainbowKit's connect modal for EVM wallets
+  const { openConnectModal } = useConnectModal();
+
+  // Auto-open EVM wallet connection when modal should be shown
+  useEffect(() => {
+    if (showEnvSelectModal && openConnectModal) {
+      // Close the env select modal
+      setShowEnvSelectModal(false);
+      // Open EVM wallet connection directly
+      openConnectModal();
+    }
+  }, [showEnvSelectModal, openConnectModal, setShowEnvSelectModal]);
 
   return (
     <>
