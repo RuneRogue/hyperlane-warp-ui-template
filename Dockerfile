@@ -42,13 +42,11 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Copy artifacts
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/yarn.lock ./yarn.lock
 COPY --from=builder /app/.yarn ./.yarn
 COPY --from=builder /app/.yarnrc.yml ./.yarnrc.yml
-
-# Install only production dependencies
-RUN yarn workspaces focus --production || yarn install --immutable --mode=skip-build
 
 # Expose port
 EXPOSE 3000
