@@ -19,7 +19,6 @@ COPY . .
 
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 ENV NEXT_PUBLIC_WALLET_CONNECT_ID=395a56931b7af7e87e7e191eb8dbb17e
-ENV NEXT_PUBLIC_REGISTRY_URL=https://github.com/RuneRogue/hyperlane-registry/tree/test
 
 # Build Next.js
 RUN yarn build
