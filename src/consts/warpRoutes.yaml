@@ -3,35 +3,6 @@
 # The input here is typically the output of the Hyperlane CLI warp deploy command
 ---
 tokens:
-  # Polygon-BlockX Test Token
-  - addressOrDenom: "0x7AFa986A60a81DbeED5c7784D897E2F50a47505e"
-    chainName: blockx
-    connections:
-      - token: ethereum|bsc|0x5dF78A9E6c8Dab6ED8ff3E2C3c988550fBfe314C
-      - token: ethereum|polygon|0x875B6A8dD6B683d19566FBEe99420E8c38d8665e
-    decimals: 18
-    name: Test Token
-    standard: EvmHypSynthetic
-    symbol: TT
-  - addressOrDenom: "0x5dF78A9E6c8Dab6ED8ff3E2C3c988550fBfe314C"
-    chainName: bsc
-    connections:
-      - token: ethereum|blockx|0x7AFa986A60a81DbeED5c7784D897E2F50a47505e
-      - token: ethereum|polygon|0x875B6A8dD6B683d19566FBEe99420E8c38d8665e
-    decimals: 18
-    name: Test Token
-    standard: EvmHypSynthetic
-    symbol: TT
-  - addressOrDenom: "0x875B6A8dD6B683d19566FBEe99420E8c38d8665e"
-    chainName: polygon
-    collateralAddressOrDenom: "0x5a45e4cf479dedd99940c2e0486dc8038561a875"
-    connections:
-      - token: ethereum|blockx|0x7AFa986A60a81DbeED5c7784D897E2F50a47505e
-      - token: ethereum|bsc|0x5dF78A9E6c8Dab6ED8ff3E2C3c988550fBfe314C
-    decimals: 18
-    name: Test Token
-    standard: EvmHypCollateral
-    symbol: TT
   # Polygon-Blockx USDT
   - addressOrDenom: "0x2f174aEac9fAD6e64760882AF4cb1DcB62921A10"
     chainName: blockx

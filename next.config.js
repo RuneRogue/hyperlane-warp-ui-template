@@ -15,20 +15,23 @@ const FRAME_SRC_HOSTS = [
   'https://*.walletconnect.org',
   'https://cdn.solflare.com',
 ];
-const STYLE_SRC_HOSTS = [];
+const STYLE_SRC_HOSTS = [
+  'https://fonts.googleapis.com',
+];
 const IMG_SRC_HOSTS = [
   'https://*.walletconnect.com',
   'https://*.githubusercontent.com',
   'https://cdn.jsdelivr.net/gh/hyperlane-xyz/hyperlane-registry@main/',
 ];
-const SCRIPT_SRC_HOSTS = ['https://snaps.consensys.io'];
+const SCRIPT_SRC_HOSTS = ['https://snaps.consensys.io', 'https://va.vercel-scripts.com'];
+const FONT_SRC_HOSTS = ['https://fonts.gstatic.com', 'https://fonts.googleapis.com'];
 const cspHeader = `
   default-src 'self';
-  script-src 'self'${isDev ? " 'unsafe-eval'" : ''} ${SCRIPT_SRC_HOSTS.join(' ')};
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' ${SCRIPT_SRC_HOSTS.join(' ')};
   style-src 'self' 'unsafe-inline' ${STYLE_SRC_HOSTS.join(' ')};
   connect-src *;
   img-src 'self' blob: data: ${IMG_SRC_HOSTS.join(' ')};
-  font-src 'self' data:;
+  font-src 'self' data: ${FONT_SRC_HOSTS.join(' ')};
   object-src 'none';
   base-uri 'self';
   form-action 'self';
