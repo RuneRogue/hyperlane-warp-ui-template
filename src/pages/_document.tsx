@@ -6,20 +6,13 @@ export default function Document() {
     <Html>
       <Head>
         <meta charSet="utf-8" />
-
-        {/* Only load essential favicon synchronously */}
-        <link rel="icon" href="/favicon.ico" />
         
-        {/* Load other icons asynchronously to not block rendering */}
-        <link rel="preload" as="image" href="/apple-touch-icon.png" />
-        <link rel="preload" as="image" href="/favicon-32x32.png" />
-        <link rel="preload" as="image" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
         
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="theme-color" content="#ffffff" />
 
-        {/* Google Fonts for Hyperbridge branding */}
+        {/* Google Fonts for Hyperbridge branding - with display=swap for faster render */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link 
