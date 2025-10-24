@@ -86,25 +86,6 @@ const nextConfig = {
         source: '/(.*)',
         headers: securityHeaders,
       },
-      // Aggressive caching for static assets
-      {
-        source: '/favicon.ico',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/_next/static/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
     ];
   },
 
@@ -113,14 +94,6 @@ const nextConfig = {
   },
 
   reactStrictMode: true,
-  
-  // Enable compression
-  compress: true,
-  
-  // Remove console logs in production
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
-  },
 };
 
 const sentryOptions = {
