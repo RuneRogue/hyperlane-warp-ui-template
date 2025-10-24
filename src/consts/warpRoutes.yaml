@@ -10,9 +10,9 @@ tokens:
       - token: ethereum|polygon|0xebf73db497e984aD6d0544eA30158E480a9780f5
     decimals: 6
     logoURI: '/logos/USDT_logo.svg'
-    name: Tether
+    name: USDT0
     standard: EvmHypSynthetic
-    symbol: USDT
+    symbol: USDT0
   - addressOrDenom: "0xebf73db497e984aD6d0544eA30158E480a9780f5"
     chainName: polygon
     collateralAddressOrDenom: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
@@ -20,9 +20,9 @@ tokens:
       - token: ethereum|blockx|0x2f174aEac9fAD6e64760882AF4cb1DcB62921A10
     decimals: 6
     logoURI: '/logos/USDT_logo.svg'
-    name: Tether
+    name: USDT0
     standard: EvmHypCollateral
-    symbol: USDT
+    symbol: USDT0
   # Polygon-Blockx USDC
   - addressOrDenom: "0xFb6253856a24544E454ab8336Eb90116f0afEB9F"
     chainName: blockx
