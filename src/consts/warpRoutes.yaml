@@ -63,7 +63,7 @@ tokens:
     name: BlockX
     standard: EvmHypCollateral
     symbol: BCX
-  # IDK
+  # POL Token
   - addressOrDenom: "0xB7749d3535b15c84574ba506b5d3b08711b645a2"
     chainName: blockx
     connections:
