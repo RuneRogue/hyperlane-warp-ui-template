@@ -17,8 +17,8 @@ export const chains: ChainMap<ChainMetadata & { mailbox?: Address }> = {
     blockExplorers: [
       {
         name: 'BlockX Explorer',
-        url: 'https://explorer.blockxnet.com',
-        apiUrl: 'https://api.blockxnet.com',
+        url: 'https://explorer-evm.blockxnet.com',
+        apiUrl: 'https://explorer-evm.blockxnet.com/api',
         family: ExplorerFamily.Blockscout,
       },
     ],
