@@ -871,6 +871,22 @@ async function validateForm(
       ];
     }
 
+    // BCX specific limit check for Polygon <-> BlockX transfers
+    const BCX_LIMIT = BigInt(10_000) * BigInt(10 ** 18); // 10K BCX
+    if (
+      token.symbol === 'BCX' &&
+      ((origin === 'polygon' && destination === 'blockx') ||
+        (origin === 'blockx' && destination === 'polygon')) &&
+      BigInt(amountWei) > BCX_LIMIT
+    ) {
+      return [
+        {
+          amount: `Transfer limit is ${fromWei(BCX_LIMIT.toString(), token.decimals)} ${token.symbol}`,
+        },
+        null,
+      ];
+    }
+
     const { address, publicKey: senderPubKey } = getAccountAddressAndPubKey(
       warpCore.multiProvider,
       origin,
