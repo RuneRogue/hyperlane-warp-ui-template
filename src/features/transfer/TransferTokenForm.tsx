@@ -13,7 +13,9 @@ import {
 import {
   AccountInfo,
   ChevronIcon,
+  IconButton,
   SpinnerIcon,
+  SwapIcon,
   getAccountAddressAndPubKey,
   useAccountAddressForChain,
   useAccounts,
@@ -28,7 +30,6 @@ import { ConnectAwareSubmitButton } from '../../components/buttons/ConnectAwareS
 import { SolidButton } from '../../components/buttons/SolidButton';
 import { TextField } from '../../components/input/TextField';
 import { WARP_QUERY_PARAMS } from '../../consts/args';
-import { chainsRentEstimate } from '../../consts/chains';
 import { config } from '../../consts/config';
 import { Color } from '../../styles/Color';
 import { logger } from '../../utils/logger';
@@ -54,11 +55,13 @@ import {
   getIndexForToken,
   getInitialTokenIndex,
   getTokenByIndex,
-  useWarpCore,
+  useWarpCore
 } from '../tokens/hooks';
 import { getTokensWithSameCollateralAddresses, isValidMultiCollateralToken } from '../tokens/utils';
 import { WalletConnectionWarning } from '../wallet/WalletConnectionWarning';
+import { FeeSectionButton } from './FeeSectionButton';
 import { RecipientConfirmationModal } from './RecipientConfirmationModal';
+import { getInterchainQuote, getTotalFee } from './fees';
 import { useFetchMaxAmount } from './maxAmount';
 import { TransferFormValues } from './types';
 import { useRecipientBalanceWatcher } from './useBalanceWatcher';
@@ -284,6 +287,17 @@ function ChainSelectSection({ isReview, mode }: { isReview: boolean; mode: 'to-b
     updateQueryParam(fieldName, chainName);
   };
 
+  // Handler for swap button
+  const onSwapChain = (origin: string, destination: string) => {
+    updateQueryParam(WARP_QUERY_PARAMS.ORIGIN, origin);
+    updateQueryParam(WARP_QUERY_PARAMS.DESTINATION, destination);
+    setTokenOnChainChange(origin, destination);
+    setOriginChainName(origin);
+  };
+
+  // Disable swap when mode restricts the chains
+  const isSwapDisabled = isReview || originDisabled || destinationDisabled;
+
   return (
     <div className="flex-1">
       <label htmlFor="network" className="block pl-0.5 text-sm text-gray-600">
@@ -300,7 +314,7 @@ function ChainSelectSection({ isReview, mode }: { isReview: boolean; mode: 'to-b
           chainFilter={filteredOriginChains}
         />
         <div className="flex flex-1 flex-col items-center">
-          {/* Hide swap button in tab mode as it doesn't make sense with fixed chains */}
+          <SwapChainsButton disabled={isSwapDisabled} onSwapChain={onSwapChain} />
         </div>
         <ChainSelectField
           name="destination"
@@ -313,6 +327,39 @@ function ChainSelectSection({ isReview, mode }: { isReview: boolean; mode: 'to-b
         />
       </div>
     </div>
+  );
+}
+
+function SwapChainsButton({
+  disabled,
+  onSwapChain,
+}: {
+  disabled?: boolean;
+  onSwapChain: (origin: string, destination: string) => void;
+}) {
+  const { values, setFieldValue } = useFormikContext<TransferFormValues>();
+  const { origin, destination } = values;
+
+  const onClick = () => {
+    if (disabled) return;
+    setFieldValue('origin', destination);
+    setFieldValue('destination', origin);
+    // Reset other fields on chain change
+    setFieldValue('recipient', '');
+    onSwapChain(destination, origin);
+  };
+
+  return (
+    <IconButton
+      width={20}
+      height={20}
+      title="Swap chains"
+      className={!disabled ? 'hover:rotate-180' : undefined}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      <SwapIcon width={20} height={20} />
+    </IconButton>
   );
 }
 
@@ -691,82 +738,114 @@ function ReviewDetails({
     amountWei,
     visible,
   );
-  const { isLoading: isQuoteLoading, fees } = useFeeQuotes(values, visible, originToken ?? undefined);
+  const { isLoading: isQuoteLoading, fees: feeQuotes } = useFeeQuotes(
+    values,
+    true,
+    originToken ?? undefined,
+    !visible,
+  );
 
   const isLoading = isApproveLoading || isQuoteLoading;
 
-  const interchainQuote =
-    originToken && objKeys(chainsRentEstimate).includes(originToken.chainName)
-      ? fees?.interchainQuote.plus(chainsRentEstimate[originToken.chainName])
-      : fees?.interchainQuote;
+  // Enhanced fee calculation from upstream
+  const fees = useMemo(() => {
+    if (!feeQuotes) return null;
+
+    const interchainQuote = getInterchainQuote(originToken, feeQuotes.interchainQuote);
+    const enhancedFees = {
+      ...feeQuotes,
+      interchainQuote: interchainQuote || feeQuotes.interchainQuote,
+    };
+    const totalFees = getTotalFee(enhancedFees)
+      .map((fee) => `${fee.getDecimalFormattedAmount().toFixed(8)} ${fee.token.symbol}`)
+      .join(', ');
+
+    return {
+      ...enhancedFees,
+      totalFees,
+    };
+  }, [feeQuotes, originToken]);
 
   return (
-    <div
-      className={`${
-        visible ? 'max-h-screen duration-1000 ease-in' : 'max-h-0 duration-500'
-      } overflow-hidden transition-all`}
-    >
-      <label className="mt-4 block pl-0.5 text-sm text-gray-600">Transactions</label>
-      <div className="mt-1.5 space-y-2 break-all rounded border border-gray-400 bg-gray-150 px-2.5 py-2 text-sm">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-6">
-            <SpinnerIcon className="h-5 w-5" />
-          </div>
-        ) : (
-          <>
-            {isApproveRequired && (
+    <>
+      {/* Fee preview section before review mode */}
+      {!visible && <FeeSectionButton visible={!visible} fees={fees} isLoading={isLoading} />}
+
+      <div
+        className={`${
+          visible ? 'max-h-screen duration-1000 ease-in' : 'max-h-0 duration-500'
+        } overflow-hidden transition-all`}
+      >
+        <label className="mt-4 block pl-0.5 text-sm text-gray-600">Transactions</label>
+        <div className="mt-1.5 space-y-2 break-all rounded border border-gray-400 bg-gray-150 px-2.5 py-2 text-sm">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-6">
+              <SpinnerIcon className="h-5 w-5" />
+            </div>
+          ) : (
+            <>
+              {isApproveRequired && (
+                <div>
+                  <h4>Transaction 1: Approve Transfer</h4>
+                  <div className="ml-1.5 mt-1.5 space-y-1.5 border-l border-gray-300 pl-2 text-xs">
+                    <p>{`Router Address: ${originToken?.addressOrDenom}`}</p>
+                    {originToken?.collateralAddressOrDenom && (
+                      <p>{`Collateral Address: ${originToken.collateralAddressOrDenom}`}</p>
+                    )}
+                  </div>
+                </div>
+              )}
               <div>
-                <h4>Transaction 1: Approve Transfer</h4>
+                <h4>{`Transaction${isApproveRequired ? ' 2' : ''}: Transfer Remote`}</h4>
                 <div className="ml-1.5 mt-1.5 space-y-1.5 border-l border-gray-300 pl-2 text-xs">
-                  <p>{`Router Address: ${originToken?.addressOrDenom}`}</p>
-                  {originToken?.collateralAddressOrDenom && (
-                    <p>{`Collateral Address: ${originToken.collateralAddressOrDenom}`}</p>
+                  {destinationToken?.addressOrDenom && (
+                    <p className="flex">
+                      <span className="min-w-[7.5rem]">Remote Token</span>
+                      <span>{destinationToken.addressOrDenom}</span>
+                    </p>
+                  )}
+
+                  <p className="flex">
+                    <span className="min-w-[7.5rem]">{isNft ? 'Token ID' : 'Amount'}</span>
+                    <span>{`${amount} ${originTokenSymbol}`}</span>
+                  </p>
+                  {scaledAmount && (
+                    <p className="flex">
+                      <span className="min-w-[7.5rem]">Received Amount</span>
+                      <span>{`${scaledAmount.value} ${originTokenSymbol} (scaled from ${scaledAmount.originScale} to ${scaledAmount.destinationScale})`}</span>
+                    </p>
+                  )}
+                  {fees?.localQuote && fees.localQuote.amount > 0n && (
+                    <p className="flex">
+                      <span className="min-w-[7.5rem]">Local Gas (est.)</span>
+                      <span>{`${fees.localQuote.getDecimalFormattedAmount().toFixed(8) || '0'} ${
+                        fees.localQuote.token.symbol || ''
+                      }`}</span>
+                    </p>
+                  )}
+                  {fees?.interchainQuote && fees.interchainQuote.amount > 0n && (
+                    <p className="flex">
+                      <span className="min-w-[7.5rem]">Interchain Gas</span>
+                      <span>{`${fees.interchainQuote.getDecimalFormattedAmount().toFixed(8) || '0'} ${
+                        fees.interchainQuote.token.symbol || ''
+                      }`}</span>
+                    </p>
+                  )}
+                  {fees?.tokenFeeQuote && fees.tokenFeeQuote.amount > 0n && (
+                    <p className="flex">
+                      <span className="min-w-[7.5rem]">Token Fee</span>
+                      <span>{`${fees.tokenFeeQuote.getDecimalFormattedAmount().toFixed(8) || '0'} ${
+                        fees.tokenFeeQuote.token.symbol || ''
+                      }`}</span>
+                    </p>
                   )}
                 </div>
               </div>
-            )}
-            <div>
-              <h4>{`Transaction${isApproveRequired ? ' 2' : ''}: Transfer Remote`}</h4>
-              <div className="ml-1.5 mt-1.5 space-y-1.5 border-l border-gray-300 pl-2 text-xs">
-                {destinationToken?.addressOrDenom && (
-                  <p className="flex">
-                    <span className="min-w-[7.5rem]">Remote Token</span>
-                    <span>{destinationToken.addressOrDenom}</span>
-                  </p>
-                )}
-
-                <p className="flex">
-                  <span className="min-w-[7.5rem]">{isNft ? 'Token ID' : 'Amount'}</span>
-                  <span>{`${amount} ${originTokenSymbol}`}</span>
-                </p>
-                {scaledAmount && (
-                  <p className="flex">
-                    <span className="min-w-[7.5rem]">Received Amount</span>
-                    <span>{`${scaledAmount.value} ${originTokenSymbol} (scaled from ${scaledAmount.originScale} to ${scaledAmount.destinationScale})`}</span>
-                  </p>
-                )}
-                {fees?.localQuote && fees.localQuote.amount > 0n && (
-                  <p className="flex">
-                    <span className="min-w-[7.5rem]">Local Gas (est.)</span>
-                    <span>{`${fees.localQuote.getDecimalFormattedAmount().toFixed(4) || '0'} ${
-                      fees.localQuote.token.symbol || ''
-                    }`}</span>
-                  </p>
-                )}
-                {interchainQuote && interchainQuote.amount > 0n && (
-                  <p className="flex">
-                    <span className="min-w-[7.5rem]">Interchain Gas</span>
-                    <span>{`${interchainQuote.getDecimalFormattedAmount().toFixed(4) || '0'} ${
-                      interchainQuote.token.symbol || ''
-                    }`}</span>
-                  </p>
-                )}
-              </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
