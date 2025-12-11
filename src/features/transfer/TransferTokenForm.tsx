@@ -55,7 +55,7 @@ import {
   getIndexForToken,
   getInitialTokenIndex,
   getTokenByIndex,
-  useWarpCore
+  useWarpCore,
 } from '../tokens/hooks';
 import { getTokensWithSameCollateralAddresses, isValidMultiCollateralToken } from '../tokens/utils';
 import { WalletConnectionWarning } from '../wallet/WalletConnectionWarning';
