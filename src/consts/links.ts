@@ -8,4 +8,5 @@ export const links = {
   twitter: 'https://x.com/BlockXnet',
   telegram: 'https://t.me/blockxnetwork',
   imgPath: 'https://cdn.jsdelivr.net/gh/hyperlane-xyz/hyperlane-registry@main',
+  transferFees: 'https://docs.hyperlane.xyz/docs/protocol/core/fees#fee-estimation',
 };
