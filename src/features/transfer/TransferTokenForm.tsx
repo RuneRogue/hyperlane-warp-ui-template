@@ -1,23 +1,23 @@
 import { IToken, Token, TokenAmount, WarpCore } from '@hyperlane-xyz/sdk';
 import {
-    ProtocolType,
-    convertToScaledAmount,
-    eqAddress,
-    errorToString,
-    fromWei,
-    isNullish,
-    isValidAddressEvm,
-    objKeys,
-    toWei,
+  ProtocolType,
+  convertToScaledAmount,
+  eqAddress,
+  errorToString,
+  fromWei,
+  isNullish,
+  isValidAddressEvm,
+  objKeys,
+  toWei,
 } from '@hyperlane-xyz/utils';
 import {
-    AccountInfo,
-    ChevronIcon,
-    SpinnerIcon,
-    getAccountAddressAndPubKey,
-    useAccountAddressForChain,
-    useAccounts,
-    useModal,
+  AccountInfo,
+  ChevronIcon,
+  SpinnerIcon,
+  getAccountAddressAndPubKey,
+  useAccountAddressForChain,
+  useAccounts,
+  useModal,
 } from '@hyperlane-xyz/widgets';
 import BigNumber from 'bignumber.js';
 import { Form, Formik, useFormikContext } from 'formik';
@@ -33,6 +33,7 @@ import { config } from '../../consts/config';
 import { Color } from '../../styles/Color';
 import { logger } from '../../utils/logger';
 import { getQueryParams, updateQueryParam } from '../../utils/queryParams';
+import { trackTransactionFailedEvent } from '../analytics/utils';
 import { ChainConnectionWarning } from '../chains/ChainConnectionWarning';
 import { ChainSelectField } from '../chains/ChainSelectField';
 import { ChainWalletWarning } from '../chains/ChainWalletWarning';
@@ -45,15 +46,15 @@ import { SelectOrInputTokenIds } from '../tokens/SelectOrInputTokenIds';
 import { TokenSelectField } from '../tokens/TokenSelectField';
 import { useIsApproveRequired } from '../tokens/approval';
 import {
-    getDestinationNativeBalance,
-    useDestinationBalance,
-    useOriginBalance,
+  getDestinationNativeBalance,
+  useDestinationBalance,
+  useOriginBalance,
 } from '../tokens/balances';
 import {
-    getIndexForToken,
-    getInitialTokenIndex,
-    getTokenByIndex,
-    useWarpCore,
+  getIndexForToken,
+  getInitialTokenIndex,
+  getTokenByIndex,
+  useWarpCore,
 } from '../tokens/hooks';
 import { getTokensWithSameCollateralAddresses, isValidMultiCollateralToken } from '../tokens/utils';
 import { WalletConnectionWarning } from '../wallet/WalletConnectionWarning';
@@ -99,6 +100,9 @@ export function TransferTokenForm({ mode = 'to-blockx' }: { mode?: 'to-blockx' |
       accounts,
       routerAddressesByChainMap,
     );
+
+    // Track failed transactions for analytics
+    trackTransactionFailedEvent(result, warpCore, values, accounts, overrideToken);
 
     // Unless this is done, the review and the transfer would contain
     // the selected token rather than collateral with highest balance
