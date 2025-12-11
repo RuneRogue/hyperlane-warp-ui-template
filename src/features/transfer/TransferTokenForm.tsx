@@ -771,11 +771,8 @@ function ReviewDetails({
       {/* Fee preview section before review mode */}
       {!visible && <FeeSectionButton visible={!visible} fees={fees} isLoading={isLoading} />}
 
-      <div
-        className={`${
-          visible ? 'max-h-screen duration-1000 ease-in' : 'max-h-0 duration-500'
-        } overflow-hidden transition-all`}
-      >
+      {visible && (
+        <div className="overflow-hidden transition-all duration-1000 ease-in">
         <label className="mt-4 block pl-0.5 text-sm text-gray-600">Transactions</label>
         <div className="mt-1.5 space-y-2 break-all rounded border border-gray-400 bg-gray-150 px-2.5 py-2 text-sm">
           {isLoading ? (
@@ -845,6 +842,7 @@ function ReviewDetails({
           )}
         </div>
       </div>
+      )}
     </>
   );
 }

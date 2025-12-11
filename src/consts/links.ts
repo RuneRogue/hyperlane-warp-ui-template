@@ -1,6 +1,6 @@
 export const links = {
   home: 'https://blockxnet.com',
-  explorer: 'https://explorer.blockxnet.com',
+  explorer: 'https://explorer-evm.blockxnet.com/',
   discord: 'https://discord.com/invite/QzNKdrBHwm',
   docs: 'https://docs.blockxnet.com/',
   warpDocs: 'https://docs.blockxnet.com',
