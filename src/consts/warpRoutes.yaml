@@ -23,11 +23,12 @@ tokens:
     name: USDT0
     standard: EvmHypCollateral
     symbol: USDT0
-  # Polygon-Blockx USDC
+  # USDC
   - addressOrDenom: "0x5d63A5612994251Af6Be47AFE34F7Bd9D04861ce"
     chainName: blockx
     connections:
       - token: ethereum|polygon|0xC726d5C214eE33AF9Fe9De0a2D78D5402eBDA299
+      - token: ethereum|bsc|0xC08fD527aD84F454351a82eF22C3c2dF67FCA99D
     decimals: 6
     logoURI: '/logos/USDC_logo.svg'
     name: USD Coin
@@ -39,6 +40,16 @@ tokens:
     connections:
       - token: ethereum|blockx|0x5d63A5612994251Af6Be47AFE34F7Bd9D04861ce
     decimals: 6
+    logoURI: '/logos/USDC_logo.svg'
+    name: USD Coin
+    standard: EvmHypCollateral
+    symbol: USDC
+  - addressOrDenom: "0xC08fD527aD84F454351a82eF22C3c2dF67FCA99D"
+    chainName: bsc
+    collateralAddressOrDenom: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d"
+    connections:
+      - token: ethereum|blockx|0x5d63A5612994251Af6Be47AFE34F7Bd9D04861ce
+    decimals: 18
     logoURI: '/logos/USDC_logo.svg'
     name: USD Coin
     standard: EvmHypCollateral
