@@ -1,7 +1,10 @@
+import { ProtocolType } from '@hyperlane-xyz/utils';
 import { useAccountForChain, useTimeout } from '@hyperlane-xyz/widgets';
 import { useFormikContext } from 'formik';
 import { useCallback } from 'react';
-import { useMultiProvider } from '../../features/chains/hooks';
+import { EVENT_NAME } from '../../features/analytics/types';
+import { trackEvent } from '../../features/analytics/utils';
+import { useChainProtocol, useMultiProvider } from '../../features/chains/hooks';
 import { useStore } from '../../features/store';
 import { SolidButton } from './SolidButton';
 
@@ -18,6 +21,7 @@ export function ConnectAwareSubmitButton<FormValues = any>({
   classes,
   disabled,
 }: Props) {
+  const protocol = useChainProtocol(chainName) || ProtocolType.Ethereum;
   const multiProvider = useMultiProvider();
   const account = useAccountForChain(multiProvider, chainName);
   const isAccountReady = account?.isReady;
@@ -40,7 +44,11 @@ export function ConnectAwareSubmitButton<FormValues = any>({
       : 'submit';
 
   // Use the same logic as top-right button: open protocol selection modal instead of direct connect
-  const onClick = isAccountReady ? undefined : () => setShowEnvSelectModal(true);
+  // Also track analytics event
+  const onClick = isAccountReady ? undefined : () => {
+    trackEvent(EVENT_NAME.WALLET_CONNECTION_INITIATED, { protocol });
+    setShowEnvSelectModal(true);
+  };
 
   // Automatically clear error state after a timeout
   const clearErrors = useCallback(() => {

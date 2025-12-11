@@ -4,6 +4,9 @@ import Head from 'next/head';
 import { PropsWithChildren, useEffect } from 'react';
 import { APP_NAME, BACKGROUND_COLOR, BACKGROUND_IMAGE } from '../../consts/app';
 import { config } from '../../consts/config';
+import { EVENT_NAME } from '../../features/analytics/types';
+import { useWalletConnectionTracking } from '../../features/analytics/useWalletConnectionTracking';
+import { trackEvent } from '../../features/analytics/utils';
 import { useStore } from '../../features/store';
 import { SideBarMenu } from '../../features/wallet/SideBarMenu';
 import { Footer } from '../nav/Footer';
@@ -18,6 +21,14 @@ export function AppLayout({ children }: PropsWithChildren) {
       setIsSideBarOpen: s.setIsSideBarOpen,
     }),
   );
+
+  // Analytics tracking for wallet connections
+  useWalletConnectionTracking();
+
+  // Track page views
+  useEffect(() => {
+    trackEvent(EVENT_NAME.PAGE_VIEWED, {});
+  }, []);
 
   // Get RainbowKit's connect modal for EVM wallets
   const { openConnectModal } = useConnectModal();
@@ -55,6 +66,9 @@ export function AppLayout({ children }: PropsWithChildren) {
         isOpen={showEnvSelectModal}
         close={() => setShowEnvSelectModal(false)}
         protocols={config.walletProtocols}
+        onProtocolSelected={(protocol) =>
+          trackEvent(EVENT_NAME.WALLET_CONNECTION_INITIATED, { protocol })
+        }
       />
       <SideBarMenu
         onClose={() => setIsSideBarOpen(false)}

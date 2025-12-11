@@ -1,23 +1,23 @@
 import { IToken, Token, TokenAmount, WarpCore } from '@hyperlane-xyz/sdk';
 import {
-  ProtocolType,
-  convertToScaledAmount,
-  eqAddress,
-  errorToString,
-  fromWei,
-  isNullish,
-  isValidAddressEvm,
-  objKeys,
-  toWei,
+    ProtocolType,
+    convertToScaledAmount,
+    eqAddress,
+    errorToString,
+    fromWei,
+    isNullish,
+    isValidAddressEvm,
+    objKeys,
+    toWei,
 } from '@hyperlane-xyz/utils';
 import {
-  AccountInfo,
-  ChevronIcon,
-  SpinnerIcon,
-  getAccountAddressAndPubKey,
-  useAccountAddressForChain,
-  useAccounts,
-  useModal,
+    AccountInfo,
+    ChevronIcon,
+    SpinnerIcon,
+    getAccountAddressAndPubKey,
+    useAccountAddressForChain,
+    useAccounts,
+    useModal,
 } from '@hyperlane-xyz/widgets';
 import BigNumber from 'bignumber.js';
 import { Form, Formik, useFormikContext } from 'formik';
@@ -45,15 +45,15 @@ import { SelectOrInputTokenIds } from '../tokens/SelectOrInputTokenIds';
 import { TokenSelectField } from '../tokens/TokenSelectField';
 import { useIsApproveRequired } from '../tokens/approval';
 import {
-  getDestinationNativeBalance,
-  useDestinationBalance,
-  useOriginBalance,
+    getDestinationNativeBalance,
+    useDestinationBalance,
+    useOriginBalance,
 } from '../tokens/balances';
 import {
-  getIndexForToken,
-  getInitialTokenIndex,
-  getTokenByIndex,
-  useWarpCore,
+    getIndexForToken,
+    getInitialTokenIndex,
+    getTokenByIndex,
+    useWarpCore,
 } from '../tokens/hooks';
 import { getTokensWithSameCollateralAddresses, isValidMultiCollateralToken } from '../tokens/utils';
 import { WalletConnectionWarning } from '../wallet/WalletConnectionWarning';
@@ -687,7 +687,7 @@ function ReviewDetails({
     amountWei,
     visible,
   );
-  const { isLoading: isQuoteLoading, fees } = useFeeQuotes(values, visible);
+  const { isLoading: isQuoteLoading, fees } = useFeeQuotes(values, visible, originToken ?? undefined);
 
   const isLoading = isApproveLoading || isQuoteLoading;
 
