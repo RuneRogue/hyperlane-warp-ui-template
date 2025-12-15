@@ -3,26 +3,37 @@
 # The input here is typically the output of the Hyperlane CLI warp deploy command
 ---
 tokens:
-  # Polygon-Blockx USDT
-  - addressOrDenom: "0x2f174aEac9fAD6e64760882AF4cb1DcB62921A10"
+  # USDT
+  - addressOrDenom: "0xA670C3C0Cad4b941A74De4B040A8Fe2dCFf6AD02"
     chainName: blockx
     connections:
-      - token: ethereum|polygon|0xebf73db497e984aD6d0544eA30158E480a9780f5
+      - token: ethereum|bsc|0x8257c73b5112CCf727619cc01034E6e5E8C776E6
+      - token: ethereum|polygon|0x9956A1Fc483b978505bA6233D7A22bEF33AEA968
     decimals: 6
     logoURI: '/logos/USDT_logo.svg'
-    name: USDT0
+    name: USDT
     standard: EvmHypSynthetic
-    symbol: USDT0
-  - addressOrDenom: "0xebf73db497e984aD6d0544eA30158E480a9780f5"
-    chainName: polygon
-    collateralAddressOrDenom: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+    symbol: USDT
+  - addressOrDenom: "0x8257c73b5112CCf727619cc01034E6e5E8C776E6"
+    chainName: bsc
+    collateralAddressOrDenom: "0x55d398326f99059ff775485246999027b3197955"
     connections:
-      - token: ethereum|blockx|0x2f174aEac9fAD6e64760882AF4cb1DcB62921A10
+      - token: ethereum|blockx|0xA670C3C0Cad4b941A74De4B040A8Fe2dCFf6AD02
+    decimals: 18
+    logoURI: '/logos/USDT_logo.svg'
+    name: Tether USD
+    standard: EvmHypCollateral
+    symbol: USDT
+  - addressOrDenom: "0x9956A1Fc483b978505bA6233D7A22bEF33AEA968"
+    chainName: polygon
+    collateralAddressOrDenom: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
+    connections:
+      - token: ethereum|blockx|0xA670C3C0Cad4b941A74De4B040A8Fe2dCFf6AD02
     decimals: 6
     logoURI: '/logos/USDT_logo.svg'
-    name: USDT0
+    name: USDT
     standard: EvmHypCollateral
-    symbol: USDT0
+    symbol: USDT
   # USDC
   - addressOrDenom: "0x5d63A5612994251Af6Be47AFE34F7Bd9D04861ce"
     chainName: blockx
@@ -74,7 +85,7 @@ tokens:
     name: BlockX
     standard: EvmHypCollateral
     symbol: BCX
-  # POL Token
+  # Polygon-BCX POL Token
   - addressOrDenom: "0xB7749d3535b15c84574ba506b5d3b08711b645a2"
     chainName: blockx
     connections:
@@ -93,4 +104,23 @@ tokens:
     name: Polygon Ecosystem Token
     standard: EvmHypNative
     symbol: POL
+  # BSC - Blockx BNB Token
+  - addressOrDenom: "0xE31979EA671cC69913d53f46f03232a862BbF1FA"
+    chainName: blockx
+    connections:
+      - token: ethereum|bsc|0x73234eDCa16BB09F459DDE9D0601eba23c63030d
+    decimals: 18
+    logoURI: '/logos/BNB_logo.svg'
+    name: BNB
+    standard: EvmHypSynthetic
+    symbol: BNB
+  - addressOrDenom: "0x73234eDCa16BB09F459DDE9D0601eba23c63030d"
+    chainName: bsc
+    connections:
+      - token: ethereum|blockx|0xE31979EA671cC69913d53f46f03232a862BbF1FA
+    decimals: 18
+    logoURI: '/logos/BNB_logo.svg'
+    name: BNB
+    standard: EvmHypNative
+    symbol: BNB
 options: {}
