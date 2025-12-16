@@ -6,18 +6,18 @@ export default function Document() {
     <Html>
       <Head>
         <meta charSet="utf-8" />
-        
+
         <link rel="manifest" href="/site.webmanifest" />
-        
+
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="theme-color" content="#ffffff" />
 
         {/* Google Fonts for Hyperbridge branding - with display=swap for faster render */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link 
-          href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@700;800;900&display=swap" 
-          rel="stylesheet" 
+        <link
+          href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@700;800;900&display=swap"
+          rel="stylesheet"
         />
 
         <meta name="application-name" content={APP_NAME} />

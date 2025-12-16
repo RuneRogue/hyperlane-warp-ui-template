@@ -167,7 +167,13 @@ export function TransferTokenForm({ mode = 'to-blockx' }: { mode?: 'to-blockx' |
   );
 }
 
-function ChainSelectSection({ isReview, mode }: { isReview: boolean; mode: 'to-blockx' | 'from-blockx' }) {
+function ChainSelectSection({
+  isReview,
+  mode,
+}: {
+  isReview: boolean;
+  mode: 'to-blockx' | 'from-blockx';
+}) {
   const warpCore = useWarpCore();
 
   const { setOriginChainName } = useStore((s) => ({
@@ -187,7 +193,7 @@ function ChainSelectSection({ isReview, mode }: { isReview: boolean; mode: 'to-b
   const { originToken, destinationToken } = useMemo(() => {
     const currentToken = getTokenByIndex(warpCore, values.tokenIndex);
     if (!currentToken) return { originToken: undefined, destinationToken: undefined };
-    
+
     // Get the actual token that exists on the origin chain
     let originToken: Token | undefined;
     if (currentToken.chainName === values.origin) {
@@ -196,48 +202,56 @@ function ChainSelectSection({ isReview, mode }: { isReview: boolean; mode: 'to-b
     } else {
       // Find a token on the origin chain that connects to the current token
       const tokensOnOrigin = warpCore.getTokensForChain(values.origin);
-      originToken = tokensOnOrigin?.find(token => 
-        token.getConnectionForChain(values.destination) || 
-        token.addressOrDenom === currentToken.addressOrDenom
+      originToken = tokensOnOrigin?.find(
+        (token) =>
+          token.getConnectionForChain(values.destination) ||
+          token.addressOrDenom === currentToken.addressOrDenom,
       );
     }
-    
+
     // Get the actual token that exists on the destination chain
     let destinationToken: IToken | undefined;
     if (originToken) {
       const connection = originToken.getConnectionForChain(values.destination);
       destinationToken = connection?.token;
     }
-    
+
     return { originToken, destinationToken };
   }, [values.tokenIndex, values.origin, values.destination, warpCore]);
 
   // Filter chains based on mode
-  const { filteredOriginChains, filteredDestinationChains, originDisabled, destinationDisabled } = useMemo(() => {
-    if (mode === 'to-blockx') {
-      // Bridge TO BlockX: Show all chains except BlockX for origin, BlockX fixed for destination
-      const availableOriginChains = Object.keys(warpCore.multiProvider.metadata).filter(chain => chain !== 'blockx');
-      return {
-        filteredOriginChains: new Set(availableOriginChains),
-        filteredDestinationChains: new Set(['blockx']),
-        originDisabled: false,
-        destinationDisabled: true,
-      };
-    } else {
-      // Bridge FROM BlockX: BlockX fixed for origin, show all chains except BlockX for destination
-      const availableDestinationChains = Object.keys(warpCore.multiProvider.metadata).filter(chain => chain !== 'blockx');
-      return {
-        filteredOriginChains: new Set(['blockx']),
-        filteredDestinationChains: new Set(availableDestinationChains),
-        originDisabled: true,
-        destinationDisabled: false,
-      };
-    }
-  }, [mode, warpCore]);
+  const { filteredOriginChains, filteredDestinationChains, originDisabled, destinationDisabled } =
+    useMemo(() => {
+      if (mode === 'to-blockx') {
+        // Bridge TO BlockX: Show all chains except BlockX for origin, BlockX fixed for destination
+        const availableOriginChains = Object.keys(warpCore.multiProvider.metadata).filter(
+          (chain) => chain !== 'blockx',
+        );
+        return {
+          filteredOriginChains: new Set(availableOriginChains),
+          filteredDestinationChains: new Set(['blockx']),
+          originDisabled: false,
+          destinationDisabled: true,
+        };
+      } else {
+        // Bridge FROM BlockX: BlockX fixed for origin, show all chains except BlockX for destination
+        const availableDestinationChains = Object.keys(warpCore.multiProvider.metadata).filter(
+          (chain) => chain !== 'blockx',
+        );
+        return {
+          filteredOriginChains: new Set(['blockx']),
+          filteredDestinationChains: new Set(availableDestinationChains),
+          originDisabled: true,
+          destinationDisabled: false,
+        };
+      }
+    }, [mode, warpCore]);
 
   // Set default values based on mode
   useEffect(() => {
-    const availableChains = Object.keys(warpCore.multiProvider.metadata).filter(chain => chain !== 'blockx');
+    const availableChains = Object.keys(warpCore.multiProvider.metadata).filter(
+      (chain) => chain !== 'blockx',
+    );
     const defaultNonBlockXChain = availableChains[0] || 'ethereum'; // fallback to ethereum if no other chains
 
     if (mode === 'to-blockx') {
@@ -265,7 +279,7 @@ function ChainSelectSection({ isReview, mode }: { isReview: boolean; mode: 'to-b
         updateQueryParam(WARP_QUERY_PARAMS.DESTINATION, defaultNonBlockXChain);
       }
     }
-    
+
     // Reset token selection when mode changes
     setFieldValue('tokenIndex', undefined);
     updateQueryParam(WARP_QUERY_PARAMS.TOKEN, '');
@@ -773,75 +787,75 @@ function ReviewDetails({
 
       {visible && (
         <div className="overflow-hidden transition-all duration-1000 ease-in">
-        <label className="mt-4 block pl-0.5 text-sm text-gray-600">Transactions</label>
-        <div className="mt-1.5 space-y-2 break-all rounded border border-gray-400 bg-gray-150 px-2.5 py-2 text-sm">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-6">
-              <SpinnerIcon className="h-5 w-5" />
-            </div>
-          ) : (
-            <>
-              {isApproveRequired && (
+          <label className="mt-4 block pl-0.5 text-sm text-gray-600">Transactions</label>
+          <div className="mt-1.5 space-y-2 break-all rounded border border-gray-400 bg-gray-150 px-2.5 py-2 text-sm">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-6">
+                <SpinnerIcon className="h-5 w-5" />
+              </div>
+            ) : (
+              <>
+                {isApproveRequired && (
+                  <div>
+                    <h4>Transaction 1: Approve Transfer</h4>
+                    <div className="ml-1.5 mt-1.5 space-y-1.5 border-l border-gray-300 pl-2 text-xs">
+                      <p>{`Router Address: ${originToken?.addressOrDenom}`}</p>
+                      {originToken?.collateralAddressOrDenom && (
+                        <p>{`Collateral Address: ${originToken.collateralAddressOrDenom}`}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
                 <div>
-                  <h4>Transaction 1: Approve Transfer</h4>
+                  <h4>{`Transaction${isApproveRequired ? ' 2' : ''}: Transfer Remote`}</h4>
                   <div className="ml-1.5 mt-1.5 space-y-1.5 border-l border-gray-300 pl-2 text-xs">
-                    <p>{`Router Address: ${originToken?.addressOrDenom}`}</p>
-                    {originToken?.collateralAddressOrDenom && (
-                      <p>{`Collateral Address: ${originToken.collateralAddressOrDenom}`}</p>
+                    {destinationToken?.addressOrDenom && (
+                      <p className="flex">
+                        <span className="min-w-[7.5rem]">Remote Token</span>
+                        <span>{destinationToken.addressOrDenom}</span>
+                      </p>
+                    )}
+
+                    <p className="flex">
+                      <span className="min-w-[7.5rem]">{isNft ? 'Token ID' : 'Amount'}</span>
+                      <span>{`${amount} ${originTokenSymbol}`}</span>
+                    </p>
+                    {scaledAmount && (
+                      <p className="flex">
+                        <span className="min-w-[7.5rem]">Received Amount</span>
+                        <span>{`${scaledAmount.value} ${originTokenSymbol} (scaled from ${scaledAmount.originScale} to ${scaledAmount.destinationScale})`}</span>
+                      </p>
+                    )}
+                    {fees?.localQuote && fees.localQuote.amount > 0n && (
+                      <p className="flex">
+                        <span className="min-w-[7.5rem]">Local Gas (est.)</span>
+                        <span>{`${fees.localQuote.getDecimalFormattedAmount().toFixed(8) || '0'} ${
+                          fees.localQuote.token.symbol || ''
+                        }`}</span>
+                      </p>
+                    )}
+                    {fees?.interchainQuote && fees.interchainQuote.amount > 0n && (
+                      <p className="flex">
+                        <span className="min-w-[7.5rem]">Interchain Gas</span>
+                        <span>{`${fees.interchainQuote.getDecimalFormattedAmount().toFixed(8) || '0'} ${
+                          fees.interchainQuote.token.symbol || ''
+                        }`}</span>
+                      </p>
+                    )}
+                    {fees?.tokenFeeQuote && fees.tokenFeeQuote.amount > 0n && (
+                      <p className="flex">
+                        <span className="min-w-[7.5rem]">Token Fee</span>
+                        <span>{`${fees.tokenFeeQuote.getDecimalFormattedAmount().toFixed(8) || '0'} ${
+                          fees.tokenFeeQuote.token.symbol || ''
+                        }`}</span>
+                      </p>
                     )}
                   </div>
                 </div>
-              )}
-              <div>
-                <h4>{`Transaction${isApproveRequired ? ' 2' : ''}: Transfer Remote`}</h4>
-                <div className="ml-1.5 mt-1.5 space-y-1.5 border-l border-gray-300 pl-2 text-xs">
-                  {destinationToken?.addressOrDenom && (
-                    <p className="flex">
-                      <span className="min-w-[7.5rem]">Remote Token</span>
-                      <span>{destinationToken.addressOrDenom}</span>
-                    </p>
-                  )}
-
-                  <p className="flex">
-                    <span className="min-w-[7.5rem]">{isNft ? 'Token ID' : 'Amount'}</span>
-                    <span>{`${amount} ${originTokenSymbol}`}</span>
-                  </p>
-                  {scaledAmount && (
-                    <p className="flex">
-                      <span className="min-w-[7.5rem]">Received Amount</span>
-                      <span>{`${scaledAmount.value} ${originTokenSymbol} (scaled from ${scaledAmount.originScale} to ${scaledAmount.destinationScale})`}</span>
-                    </p>
-                  )}
-                  {fees?.localQuote && fees.localQuote.amount > 0n && (
-                    <p className="flex">
-                      <span className="min-w-[7.5rem]">Local Gas (est.)</span>
-                      <span>{`${fees.localQuote.getDecimalFormattedAmount().toFixed(8) || '0'} ${
-                        fees.localQuote.token.symbol || ''
-                      }`}</span>
-                    </p>
-                  )}
-                  {fees?.interchainQuote && fees.interchainQuote.amount > 0n && (
-                    <p className="flex">
-                      <span className="min-w-[7.5rem]">Interchain Gas</span>
-                      <span>{`${fees.interchainQuote.getDecimalFormattedAmount().toFixed(8) || '0'} ${
-                        fees.interchainQuote.token.symbol || ''
-                      }`}</span>
-                    </p>
-                  )}
-                  {fees?.tokenFeeQuote && fees.tokenFeeQuote.amount > 0n && (
-                    <p className="flex">
-                      <span className="min-w-[7.5rem]">Token Fee</span>
-                      <span>{`${fees.tokenFeeQuote.getDecimalFormattedAmount().toFixed(8) || '0'} ${
-                        fees.tokenFeeQuote.token.symbol || ''
-                      }`}</span>
-                    </p>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
       )}
     </>
   );
@@ -887,21 +901,31 @@ function useFormInitialValues(mode: 'to-blockx' | 'from-blockx'): TransferFormVa
   return useMemo(() => {
     const firstToken = defaultOriginToken || warpCore.tokens[0];
     const connectedToken = firstToken.connections?.[0];
-    
+
     // Set default values based on mode
     let defaultOrigin: string;
     let defaultDestination: string;
 
     if (mode === 'to-blockx') {
       // Bridge TO BlockX: default origin is first available non-BlockX chain, destination is BlockX
-      const availableChains = Object.keys(warpCore.multiProvider.metadata).filter(chain => chain !== 'blockx');
-      defaultOrigin = originQuery && originQuery !== 'blockx' ? originQuery : availableChains[0] || firstToken.chainName;
+      const availableChains = Object.keys(warpCore.multiProvider.metadata).filter(
+        (chain) => chain !== 'blockx',
+      );
+      defaultOrigin =
+        originQuery && originQuery !== 'blockx'
+          ? originQuery
+          : availableChains[0] || firstToken.chainName;
       defaultDestination = 'blockx';
     } else {
       // Bridge FROM BlockX: origin is BlockX, default destination is first available non-BlockX chain
-      const availableChains = Object.keys(warpCore.multiProvider.metadata).filter(chain => chain !== 'blockx');
+      const availableChains = Object.keys(warpCore.multiProvider.metadata).filter(
+        (chain) => chain !== 'blockx',
+      );
       defaultOrigin = 'blockx';
-      defaultDestination = destinationQuery && destinationQuery !== 'blockx' ? destinationQuery : availableChains[0] || connectedToken?.token?.chainName || '';
+      defaultDestination =
+        destinationQuery && destinationQuery !== 'blockx'
+          ? destinationQuery
+          : availableChains[0] || connectedToken?.token?.chainName || '';
     }
 
     return {

@@ -7,15 +7,15 @@ export function Header() {
   return (
     <header className="w-full px-2 pb-2 pt-3 sm:px-6 lg:px-12">
       <div className="flex items-start justify-between">
-        <Link href="/" className="flex items-center gap-2 sm:gap-3 py-2">
+        <Link href="/" className="flex items-center gap-2 py-2 sm:gap-3">
           {/* Logo - smaller on mobile */}
-          <div className="bg-white rounded-lg p-1.5 sm:p-2 shadow-md">
-            <Image 
-              src={ProjectLogo} 
+          <div className="rounded-lg bg-white p-1.5 shadow-md sm:p-2">
+            <Image
+              src={ProjectLogo}
               width={100}
               height={30}
-              alt="BlockX" 
-              className="w-16 sm:w-32 md:w-40 ml-0.5 sm:ml-1 mt-0.5" 
+              alt="BlockX"
+              className="ml-0.5 mt-0.5 w-16 sm:ml-1 sm:w-32 md:w-40"
             />
           </div>
           {/* Hyperbridge branding with beta tag - responsive sizing */}
@@ -32,7 +32,7 @@ export function Header() {
             >
               Hyperbridge
             </h1>
-            <span 
+            <span
               style={{
                 fontFamily: '"Space Grotesk", sans-serif',
                 fontWeight: '700',
@@ -42,7 +42,7 @@ export function Header() {
                 borderRadius: '6px',
                 boxShadow: '0 4px 12px rgba(255, 140, 0, 0.5)',
               }}
-              className="text-[9px] sm:text-xs md:text-[13px] px-2 py-1 sm:px-3 sm:py-1.5"
+              className="px-2 py-1 text-[9px] sm:px-3 sm:py-1.5 sm:text-xs md:text-[13px]"
             >
               BETA
             </span>

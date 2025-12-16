@@ -30,10 +30,10 @@ export function TokenSelectField({ name, disabled, setIsNft }: Props) {
   const { origin, destination } = values;
   useEffect(() => {
     const tokensWithRoute = warpCore.getTokensForRoute(origin, destination);
-    
+
     // Only set as automatic when there are NO routes
     setIsAutomaticSelection(tokensWithRoute.length === 0);
-    
+
     // If there's exactly one route and no token is currently selected, auto-select it
     if (tokensWithRoute.length === 1 && field.value === undefined) {
       const tokenIndex = getIndexForToken(warpCore, tokensWithRoute[0]);
@@ -112,7 +112,7 @@ function TokenButton({
   isAutomatic?: boolean;
 }) {
   const displayText = token?.symbol || (isAutomatic ? 'No routes available' : 'Select Token');
-  
+
   return (
     <button
       type="button"
@@ -121,9 +121,7 @@ function TokenButton({
     >
       <div className="flex items-center">
         {token && <TokenIcon token={token} size={20} />}
-        <span className={`ml-2 ${!token?.symbol && 'text-slate-400'}`}>
-          {displayText}
-        </span>
+        <span className={`ml-2 ${!token?.symbol && 'text-slate-400'}`}>{displayText}</span>
       </div>
       <ChevronIcon width={12} height={8} direction="s" />
     </button>

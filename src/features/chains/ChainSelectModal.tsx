@@ -25,9 +25,9 @@ export function ChainSelectListModal({
   }));
 
   // Filter chains if chainFilter is provided
-  const filteredChainMetadata = chainFilter 
+  const filteredChainMetadata = chainFilter
     ? Object.fromEntries(
-        Object.entries(chainMetadata).filter(([chainName]) => chainFilter.has(chainName))
+        Object.entries(chainMetadata).filter(([chainName]) => chainFilter.has(chainName)),
       )
     : chainMetadata;
 
@@ -37,7 +37,11 @@ export function ChainSelectListModal({
   };
 
   return (
-    <Modal isOpen={isOpen} close={close} panelClassname="p-4 sm:p-5 max-w-lg min-h-[40vh] hide-edit-button">
+    <Modal
+      isOpen={isOpen}
+      close={close}
+      panelClassname="p-4 sm:p-5 max-w-lg min-h-[40vh] hide-edit-button"
+    >
       <ChainSearchMenu
         chainMetadata={filteredChainMetadata}
         onClickChain={onSelectChain}
