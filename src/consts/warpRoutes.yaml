@@ -65,26 +65,6 @@ tokens:
     name: USD Coin
     standard: EvmHypCollateral
     symbol: USDC
-  # Polygon-Blockx BCX
-  - addressOrDenom: "0xef67eBfbcc8E6A9E6F1dc9bAa7a4900C3194a08A"
-    chainName: blockx
-    connections:
-      - token: ethereum|polygon|0xb9D75Cd1d6dE1ECc6Cf60731e4643dA58eD918DE
-    decimals: 18
-    logoURI: '/logos/logo.svg'
-    name: BlockX
-    standard: EvmHypNative
-    symbol: BCX
-  - addressOrDenom: "0xb9D75Cd1d6dE1ECc6Cf60731e4643dA58eD918DE"
-    chainName: polygon
-    collateralAddressOrDenom: "0x871531a59Ef89C5262bCF58a80AB29F9711EA5a7"
-    connections:
-      - token: ethereum|blockx|0xef67eBfbcc8E6A9E6F1dc9bAa7a4900C3194a08A
-    decimals: 18
-    logoURI: '/logos/logo.svg'
-    name: BlockX
-    standard: EvmHypCollateral
-    symbol: BCX
   # Polygon-BCX POL Token
   - addressOrDenom: "0xB7749d3535b15c84574ba506b5d3b08711b645a2"
     chainName: blockx
